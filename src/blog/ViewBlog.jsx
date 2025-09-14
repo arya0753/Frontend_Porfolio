@@ -1,10 +1,10 @@
-import { Box } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Add from "./Add";
 
 const MotionBox = motion(Box);
-const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.8, y: 40 },
@@ -28,7 +28,7 @@ const ViewBlog = () => {
         setPosts(sortedPosts);
       } catch (err) {
         console.error("❌ Error fetching posts:", err);
-        setError(err.message);
+        setError(err.message || "Something went wrong");
       } finally {
         setLoading(false);
       }
@@ -37,11 +37,21 @@ const ViewBlog = () => {
     fetchPosts();
   }, []);
 
-  if (loading) return <p style={{ color: "white" }}>Loading blogs...</p>;
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
+  if (loading) {
+    // Simple skeleton loader
+    return (
+      <Box sx={{ width: "100%", maxWidth: "900px", margin: "auto", p: 2 }}>
+        <Skeleton variant="text" height={50} />
+        <Skeleton variant="rectangular" height={150} sx={{ mt: 2, borderRadius: 2 }} />
+        <Skeleton variant="rectangular" height={150} sx={{ mt: 2, borderRadius: 2 }} />
+      </Box>
+    );
+  }
+
+  if (error) return <p style={{ color: "red", textAlign: "center" }}>Error: {error}</p>;
   if (posts.length === 0)
     return (
-      <p style={{ color: "white" }}>
+      <p style={{ color: "white", textAlign: "center" }}>
         No blogs found. <Add />
       </p>
     );
@@ -74,7 +84,7 @@ const ViewBlog = () => {
       >
         {posts.map((post) => (
           <MotionBox
-            key={post._id}
+            key={post._id || Math.random()} // fallback key if _id missing
             variants={cardVariants}
             initial="hidden"
             whileInView="visible"
@@ -97,13 +107,15 @@ const ViewBlog = () => {
                 marginBottom: "1rem",
               }}
             >
-              {post.title}
+              {post.title || "Untitled Post"}
             </h3>
-            <Box sx={{ mb: 2, color: "#ddd" }}>{post.description}</Box>
+            <Box sx={{ mb: 2, color: "#ddd" }}>
+              {post.description || "No description available."}
+            </Box>
             {post.photo ? (
               <img
                 src={`${BACKEND_BASE_URL}/uploads/${post.photo}`}
-                alt={post.title}
+                alt={post.title || "Blog image"}
                 style={{
                   width: "100%",
                   maxHeight: "400px",
@@ -111,7 +123,7 @@ const ViewBlog = () => {
                   borderRadius: "8px",
                 }}
                 onError={(e) => {
-                  e.target.src = "/placeholder.png";
+                  e.target.src = "/placeholder.png"; // fallback image in public folder
                 }}
               />
             ) : (
