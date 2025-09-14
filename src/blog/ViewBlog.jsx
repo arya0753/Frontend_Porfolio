@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Add from "./Add";
 
-const MotionBox = motion(Box);
+const MotionBox = motion(Box); // Optional: use motion.create(Box) if you want to remove warning
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 const cardVariants = {
@@ -23,7 +23,6 @@ const ViewBlog = () => {
         if (!res.ok) throw new Error("Failed to fetch posts");
 
         const data = await res.json();
-        // Sort posts by newest first
         const sortedPosts = [...data].sort((a, b) => (a._id < b._id ? 1 : -1));
         setPosts(sortedPosts);
       } catch (err) {
@@ -38,7 +37,6 @@ const ViewBlog = () => {
   }, []);
 
   if (loading) {
-    // Simple skeleton loader
     return (
       <Box sx={{ width: "100%", maxWidth: "900px", margin: "auto", p: 2 }}>
         <Skeleton variant="text" height={50} />
@@ -48,17 +46,19 @@ const ViewBlog = () => {
     );
   }
 
-  if (error) return <p style={{ color: "red", textAlign: "center" }}>Error: {error}</p>;
+  if (error)
+    return <p style={{ color: "red", textAlign: "center" }}>Error: {error}</p>;
+
   if (posts.length === 0)
     return (
-      <p style={{ color: "white", textAlign: "center" }}>
-        No blogs found. <Add />
-      </p>
+      <div style={{ textAlign: "center", color: "white" }}>
+        No blogs found.
+        <Add />
+      </div>
     );
 
   return (
     <Box sx={{ width: "100%", maxWidth: "900px", margin: "auto", p: 2 }}>
-      {/* Header */}
       <Box
         sx={{
           display: "flex",
@@ -71,7 +71,6 @@ const ViewBlog = () => {
         <Add />
       </Box>
 
-      {/* Blog List */}
       <Box
         sx={{
           display: "flex",
@@ -82,9 +81,9 @@ const ViewBlog = () => {
           background: "linear-gradient(135deg, #1f1f1f, #2a2a2a, #1f1f1f)",
         }}
       >
-        {posts.map((post) => (
+        {posts.map((post, index) => (
           <MotionBox
-            key={post._id || Math.random()} // fallback key if _id missing
+            key={post._id || index}
             variants={cardVariants}
             initial="hidden"
             whileInView="visible"
@@ -123,7 +122,7 @@ const ViewBlog = () => {
                   borderRadius: "8px",
                 }}
                 onError={(e) => {
-                  e.target.src = "/placeholder.png"; // fallback image in public folder
+                  e.target.src = "/placeholder.png";
                 }}
               />
             ) : (

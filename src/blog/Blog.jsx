@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 const PostForm = () => {
   const navigate = useNavigate();
@@ -31,8 +31,8 @@ const PostForm = () => {
       const result = await res.json();
       console.log("✅ Post created:", result);
 
-      reset(); // clear form
-      navigate("/viewblog"); // navigate to blog page
+      reset();
+      navigate("/viewblog");
     } catch (err) {
       console.error("❌ Error creating post:", err);
       alert("Error creating post. Please try again.");
@@ -91,10 +91,7 @@ const PostForm = () => {
       </div>
 
       {/* Submit */}
-      <Button
-        sx={buttonStyle}
-        type="submit"
-      >
+      <Button sx={buttonStyle} type="submit">
         Submit
       </Button>
     </form>
@@ -137,8 +134,7 @@ const buttonStyle = {
   },
   "&:hover": {
     transform: "scale(1.05)",
-    background:
-      "radial-gradient(circle 100px at 80% -10%, #2a5bcf, #0d0d0d)",
+    background: "radial-gradient(circle 100px at 80% -10%, #2a5bcf, #0d0d0d)",
     boxShadow: "0 0 25px #1f75fe88, 0 0 50px #1f75fe44",
     "&::after": {
       boxShadow: "0 0 35px #1f75feaa",
