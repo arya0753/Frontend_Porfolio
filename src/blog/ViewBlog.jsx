@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Add from "./Add";
 
 const MotionBox = motion(Box);
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.5, y: 50 },
@@ -12,36 +12,29 @@ const cardVariants = {
 };
 
 const ViewBlog = () => {
-  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // ✅ Load backend URL from environment
-  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const res = await fetch(`${BACKEND_BASE_URL}/api/posts`);
+        if (!res.ok) throw new Error("Failed to fetch posts");
+
         const data = await res.json();
-
-        // Sort by _id so the latest blog shows first
-        const sortedPosts = [...data].sort((a, b) => {
-          if (a._id > b._id) return -1;
-          if (a._id < b._id) return 1;
-          return 0;
-        });
-
+        const sortedPosts = [...data].sort((a, b) =>
+          a._id > b._id ? -1 : 1
+        );
         setPosts(sortedPosts);
       } catch (err) {
-        console.error("Error fetching posts:", err);
+        console.error("❌ Error fetching posts:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPosts();
-  }, [BACKEND_BASE_URL]);
+  }, []);
 
   if (loading) return <p>Loading blogs...</p>;
   if (posts.length === 0)
@@ -102,12 +95,7 @@ const ViewBlog = () => {
             >
               {post.title}
             </h3>
-            <div
-              style={{
-                width: "100%",
-                marginBottom: "25px",
-              }}
-            >
+            <div style={{ width: "100%", marginBottom: "25px" }}>
               {post.description}
             </div>
             {post.photo && (

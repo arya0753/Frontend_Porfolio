@@ -26,15 +26,16 @@ const PostForm = () => {
         body: formData,
       });
 
+      if (!res.ok) throw new Error("Failed to create post");
+
       const result = await res.json();
-      console.log("Post created:", result);
+      console.log("✅ Post created:", result);
 
       reset(); // clear form
-
-      // ✅ Navigate to /blog after successful post
-      navigate("/viewblog");
+      navigate("/viewblog"); // navigate to blog page
     } catch (err) {
-      console.error("Error:", err);
+      console.error("❌ Error creating post:", err);
+      alert("Error creating post. Please try again.");
     }
   };
 
@@ -59,112 +60,90 @@ const PostForm = () => {
       <div>
         <label>Title: </label>
         <input
-          style={{
-            color: "white",
-            width: "250px",
-            height: "25px",
-            margin: "10px",
-            padding: "5px",
-            background: "transparent",
-            borderRadius: "10px",
-          }}
+          style={inputStyle}
           type="text"
           placeholder="Title"
           {...register("title", { required: "Title is required" })}
         />
-        {errors.title && typeof errors.title?.message === "string" && (
-          <p>{errors.title.message}</p>
-        )}
+        {errors.title && <p>{errors.title.message}</p>}
       </div>
 
       {/* Description */}
-      <div
-        className="description"
-        style={{ display: "flex", alignItems: "center" }}
-      >
+      <div style={{ display: "flex", alignItems: "center" }}>
         <label>Description: </label>
         <textarea
-          style={{
-            color: "white",
-            width: "215px",
-            height: "65px",
-            margin: "10px",
-            padding: "5px",
-            background: "transparent",
-            borderRadius: "10px",
-          }}
+          style={{ ...inputStyle, width: "215px", height: "65px" }}
           {...register("description", { required: "Description is required" })}
-        ></textarea>
-        {errors.description &&
-          typeof errors.description?.message === "string" && (
-            <p>{errors.description.message}</p>
-          )}
+        />
+        {errors.description && <p>{errors.description.message}</p>}
       </div>
 
       {/* Photo */}
       <div>
         <label>Photo:</label>
         <input
-          style={{
-            color: "white",
-            width: "250px",
-            height: "25px",
-            margin: "10px",
-            padding: "5px",
-            background: "transparent",
-            borderRadius: "10px",
-          }}
+          style={inputStyle}
           type="file"
           accept="image/*"
           {...register("photo", { required: "Photo is required" })}
         />
-        {errors.photo && typeof errors.photo?.message === "string" && (
-          <p>{errors.photo.message}</p>
-        )}
+        {errors.photo && <p>{errors.photo.message}</p>}
       </div>
 
       {/* Submit */}
       <Button
-        sx={{
-          color: "white",
-          cursor: "pointer",
-          borderRadius: 20,
-          fontSize: "0.85rem",
-          border: "none",
-          px: 2,
-          py: 1,
-          background:
-            "radial-gradient(circle 80px at 80% -10%, #1f3660ff, #181b1b)",
-          position: "relative",
-          transition: "all 0.3s ease-in-out",
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            width: "45%",
-            height: "40%",
-            borderRadius: 20,
-            top: 0,
-            right: 0,
-            boxShadow: "0 0 20px #ffffff38",
-            zIndex: -1,
-            transition: "all 0.3s ease-in-out",
-          },
-          "&:hover": {
-            transform: "scale(1.05)",
-            background:
-              "radial-gradient(circle 100px at 80% -10%, #2a5bcf, #0d0d0d)",
-            boxShadow: "0 0 25px #1f75fe88, 0 0 50px #1f75fe44",
-            "&::after": {
-              boxShadow: "0 0 35px #1f75feaa",
-            },
-          },
-        }}
+        sx={buttonStyle}
         type="submit"
       >
         Submit
       </Button>
     </form>
   );
+};
+
+const inputStyle = {
+  color: "white",
+  width: "250px",
+  height: "25px",
+  margin: "10px",
+  padding: "5px",
+  background: "transparent",
+  borderRadius: "10px",
+  border: "1px solid #444",
+};
+
+const buttonStyle = {
+  color: "white",
+  cursor: "pointer",
+  borderRadius: 20,
+  fontSize: "0.85rem",
+  border: "none",
+  px: 2,
+  py: 1,
+  background: "radial-gradient(circle 80px at 80% -10%, #1f3660ff, #181b1b)",
+  position: "relative",
+  transition: "all 0.3s ease-in-out",
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    width: "45%",
+    height: "40%",
+    borderRadius: 20,
+    top: 0,
+    right: 0,
+    boxShadow: "0 0 20px #ffffff38",
+    zIndex: -1,
+    transition: "all 0.3s ease-in-out",
+  },
+  "&:hover": {
+    transform: "scale(1.05)",
+    background:
+      "radial-gradient(circle 100px at 80% -10%, #2a5bcf, #0d0d0d)",
+    boxShadow: "0 0 25px #1f75fe88, 0 0 50px #1f75fe44",
+    "&::after": {
+      boxShadow: "0 0 35px #1f75feaa",
+    },
+  },
 };
 
 export default PostForm;
