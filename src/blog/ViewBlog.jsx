@@ -13,15 +13,16 @@ const cardVariants = {
 
 const ViewBlog = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([
-    { _id: "", title: "", description: "", photo: "" },
-  ]);
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // ✅ Load backend URL from environment
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/posts");
+        const res = await fetch(`${BACKEND_BASE_URL}/api/posts`);
         const data = await res.json();
 
         // Sort by _id so the latest blog shows first
@@ -40,17 +41,18 @@ const ViewBlog = () => {
     };
 
     fetchPosts();
-  }, []);
+  }, [BACKEND_BASE_URL]);
 
   if (loading) return <p>Loading blogs...</p>;
-  if (posts.length === 0) return <p style={{color:"white"}}>No blogs found. <Add /></p>;
+  if (posts.length === 0)
+    return (
+      <p style={{ color: "white" }}>
+        No blogs found. <Add />
+      </p>
+    );
 
   return (
-    <>
-    
     <div style={{ width: "100%", margin: "auto" }}>
-      
-     
       <div
         className="header"
         style={{
@@ -60,7 +62,7 @@ const ViewBlog = () => {
         }}
       >
         <h2 style={{ color: "white" }}>📖 Blog Posts</h2>
-         <Add />
+        <Add />
       </div>
 
       <div
@@ -81,10 +83,8 @@ const ViewBlog = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: false, amount: 0.1 }}
-            animate="visible"
             transition={{ duration: 0.8, ease: "easeOut" }}
             sx={{
-              
               border: "1px solid black",
               padding: "1rem",
               borderRadius: "8px",
@@ -105,8 +105,6 @@ const ViewBlog = () => {
             <div
               style={{
                 width: "100%",
-                maxHeight: "fit-content",
-                objectFit: "cover",
                 marginBottom: "25px",
               }}
             >
@@ -114,7 +112,7 @@ const ViewBlog = () => {
             </div>
             {post.photo && (
               <img
-                src={`http://localhost:8000/${post.photo}`}
+                src={`${BACKEND_BASE_URL}/${post.photo}`}
                 alt={post.title}
                 style={{
                   width: "100%",
@@ -127,7 +125,6 @@ const ViewBlog = () => {
         ))}
       </div>
     </div>
-    </>
   );
 };
 
