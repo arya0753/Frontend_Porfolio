@@ -39,6 +39,7 @@ function App() {
               width: "100%",
             }}
           >
+          {/* kjhgvjyiuojlknjbkhj */}
             <Navbar />
 
             <Box
