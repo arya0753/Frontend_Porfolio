@@ -18,6 +18,7 @@ const ViewBlog = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        console.log("Fetching posts from:", `${BACKEND_BASE_URL}/api/posts`);
         const res = await fetch(`${BACKEND_BASE_URL}/api/posts`);
         if (!res.ok) throw new Error("Failed to fetch posts");
 
@@ -75,7 +76,7 @@ const ViewBlog = () => {
             variants={cardVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.1 }}
+            viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             sx={{
               border: "1px solid black",
@@ -98,16 +99,21 @@ const ViewBlog = () => {
             <div style={{ width: "100%", marginBottom: "25px" }}>
               {post.description}
             </div>
-            {post.photo && (
+            {post.photo ? (
               <img
-                src={`${BACKEND_BASE_URL}/${post.photo}`}
+                src={`${BACKEND_BASE_URL}/uploads/${post.photo}`}
                 alt={post.title}
                 style={{
                   width: "100%",
                   maxHeight: "fit-content",
                   objectFit: "cover",
                 }}
+                onError={(e) => {
+                  e.target.src = "/placeholder.png"; // fallback image if 404
+                }}
               />
+            ) : (
+              <p>No image available</p>
             )}
           </MotionBox>
         ))}
