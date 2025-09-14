@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 // @ts-ignore
 import { useNavigate } from 'react-router-dom';
-import projectLogo from "../../../assets/projectLogo.jpg";
+import projectLogo from "../../../assets/projectlogo.jpg";
 
 
 
