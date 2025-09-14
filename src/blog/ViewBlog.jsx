@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Add from "./Add";
 
-const MotionBox = motion(Box); // Optional: use motion.create(Box) if you want to remove warning
+const MotionBox = motion(Box);
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 const cardVariants = {
@@ -32,55 +32,33 @@ const ViewBlog = () => {
         setLoading(false);
       }
     };
-
     fetchPosts();
   }, []);
 
-  if (loading) {
-    return (
-      <Box sx={{ width: "100%", maxWidth: "900px", margin: "auto", p: 2 }}>
-        <Skeleton variant="text" height={50} />
-        <Skeleton variant="rectangular" height={150} sx={{ mt: 2, borderRadius: 2 }} />
-        <Skeleton variant="rectangular" height={150} sx={{ mt: 2, borderRadius: 2 }} />
-      </Box>
-    );
-  }
+  if (loading) return (
+    <Box sx={{ width: "100%", maxWidth: "900px", margin: "auto", p: 2 }}>
+      <Skeleton variant="text" height={50} />
+      <Skeleton variant="rectangular" height={150} sx={{ mt: 2, borderRadius: 2 }} />
+      <Skeleton variant="rectangular" height={150} sx={{ mt: 2, borderRadius: 2 }} />
+    </Box>
+  );
 
-  if (error)
-    return <p style={{ color: "red", textAlign: "center" }}>Error: {error}</p>;
-
-  if (posts.length === 0)
-    return (
-      <div style={{ textAlign: "center", color: "white" }}>
-        No blogs found.
-        <Add />
-      </div>
-    );
+  if (error) return <p style={{ color: "red", textAlign: "center" }}>Error: {error}</p>;
+  if (posts.length === 0) return (
+    <div style={{ textAlign: "center", color: "white" }}>
+      No blogs found.
+      <Add />
+    </div>
+  );
 
   return (
     <Box sx={{ width: "100%", maxWidth: "900px", margin: "auto", p: 2 }}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 3,
-        }}
-      >
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
         <h2 style={{ color: "white" }}>📖 Blog Posts</h2>
         <Add />
       </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-          p: 2,
-          borderRadius: 2,
-          background: "linear-gradient(135deg, #1f1f1f, #2a2a2a, #1f1f1f)",
-        }}
-      >
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 3, p: 2, borderRadius: 2, background: "linear-gradient(135deg, #1f1f1f, #2a2a2a, #1f1f1f)" }}>
         {posts.map((post, index) => (
           <MotionBox
             key={post._id || index}
@@ -89,45 +67,20 @@ const ViewBlog = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            sx={{
-              border: "1px solid #333",
-              borderRadius: 2,
-              p: 3,
-              backgroundColor: "#222",
-            }}
+            sx={{ border: "1px solid #333", borderRadius: 2, p: 3, backgroundColor: "#222" }}
           >
-            <h3
-              style={{
-                fontSize: "2rem",
-                fontWeight: "bold",
-                background: "linear-gradient(90deg, #6a11cb, #2575fc)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                marginBottom: "1rem",
-              }}
-            >
+            <h3 style={{ fontSize: "2rem", fontWeight: "bold", background: "linear-gradient(90deg, #6a11cb, #2575fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "1rem" }}>
               {post.title || "Untitled Post"}
             </h3>
             <Box sx={{ mb: 2, color: "#ddd" }}>
               {post.description || "No description available."}
             </Box>
-            {post.photo ? (
-              <img
-                src={`${BACKEND_BASE_URL}/uploads/${post.photo}`}
-                alt={post.title || "Blog image"}
-                style={{
-                  width: "100%",
-                  maxHeight: "400px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                }}
-                onError={(e) => {
-                  e.target.src = "/placeholder.png";
-                }}
-              />
-            ) : (
-              <p style={{ color: "#aaa" }}>No image available</p>
-            )}
+            <img
+              src={post.photo ? `${BACKEND_BASE_URL}/uploads/${post.photo}` : "/placeholder.png"}
+              alt={post.title || "Blog image"}
+              style={{ width: "100%", maxHeight: "400px", objectFit: "cover", borderRadius: "8px" }}
+              onError={(e) => { e.target.src = "/placeholder.png"; }}
+            />
           </MotionBox>
         ))}
       </Box>
