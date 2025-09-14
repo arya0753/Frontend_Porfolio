@@ -1,0 +1,54 @@
+@media (max-width: 600px) {
+  body {
+    -ms-overflow-style: none; 
+    scrollbar-width: none;     
+    overflow-y: scroll; 
+    overflow-x: scroll;      
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+
+
+
+
+/* Define custom fonts */
+@font-face {
+  font-family: 'MyFont-Bold';
+  src: url('./assets/font/Inter_24pt-Bold.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MyFont-Medium';
+  src: url('./assets/font/Inter_24pt-Medium.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'MyFont-Regular';
+  src: url('./assets/font/Inter_24pt-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MyFont-Semibold';
+  src: url('./assets/font/Inter_24pt-SemiBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal; 
+}
+
+/* Define CSS variables */
+:root {
+  --font-primary: 'MyFont-Regular', sans-serif;
+  --color-bg: #0f0f0f;
+  --color-text: #ffffff;
+  --color-accent: #00bcd4;
+}
+
+
