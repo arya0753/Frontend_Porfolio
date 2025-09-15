@@ -1,90 +1,135 @@
-import { Box, Skeleton } from "@mui/material";
+import { Box } from "@mui/material";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Add from "./Add";
 
 const MotionBox = motion(Box);
-const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const cardVariants = {
-  hidden: { opacity: 0, scale: 0.8, y: 40 },
+  hidden: { opacity: 0, scale: 0.5, y: 50 },
   visible: { opacity: 1, scale: 1, y: 0 },
 };
 
 const ViewBlog = () => {
-  const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState([
+    { _id: "", title: "", description: "", photo: "" },
+  ]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const res = await fetch(`${BACKEND_BASE_URL}/api/posts`);
-        if (!res.ok) throw new Error("Failed to fetch posts");
-
         const data = await res.json();
-        const sortedPosts = [...data].sort((a, b) => (a._id < b._id ? 1 : -1));
+
+        // Sort by _id so the latest blog shows first
+        const sortedPosts = [...data].sort((a, b) => {
+          if (a._id > b._id) return -1;
+          if (a._id < b._id) return 1;
+          return 0;
+        });
+
         setPosts(sortedPosts);
       } catch (err) {
-        console.error("❌ Error fetching posts:", err);
-        setError(err.message || "Something went wrong");
+        console.error("Error fetching posts:", err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchPosts();
   }, []);
 
-  if (loading) return (
-    <Box sx={{ width: "100%", maxWidth: "900px", margin: "auto", p: 2 }}>
-      <Skeleton variant="text" height={50} />
-      <Skeleton variant="rectangular" height={150} sx={{ mt: 2, borderRadius: 2 }} />
-      <Skeleton variant="rectangular" height={150} sx={{ mt: 2, borderRadius: 2 }} />
-    </Box>
-  );
-
-  if (error) return <p style={{ color: "red", textAlign: "center" }}>Error: {error}</p>;
-  if (posts.length === 0) return (
-    <div style={{ textAlign: "center", color: "white" }}>
-      No blogs found.
-      <Add />
-    </div>
-  );
+  if (loading) return <p>Loading blogs...</p>;
+  if (posts.length === 0) return <p style={{color:"white"}}>No blogs found. <Add /></p>;
 
   return (
-    <Box sx={{ width: "100%", maxWidth: "900px", margin: "auto", p: 2 }}>
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
+    <>
+    
+    <div style={{ width: "100%", margin: "auto" }}>
+      
+     
+      <div
+        className="header"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <h2 style={{ color: "white" }}>📖 Blog Posts</h2>
-        <Add />
-      </Box>
+         <Add />
+      </div>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 3, p: 2, borderRadius: 2, background: "linear-gradient(135deg, #1f1f1f, #2a2a2a, #1f1f1f)" }}>
-        {posts.map((post, index) => (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          color: "white",
+          padding: "2rem",
+          gap: "1rem",
+          borderRadius: "5px",
+          background: "linear-gradient(135deg, #1f1f1f, #2a2a2a, #1f1f1f)",
+        }}
+      >
+        {posts.map((post) => (
           <MotionBox
-            key={post._id || index}
+            key={post._id}
             variants={cardVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.1 }}
+            animate="visible"
             transition={{ duration: 0.8, ease: "easeOut" }}
-            sx={{ border: "1px solid #333", borderRadius: 2, p: 3, backgroundColor: "#222" }}
+            sx={{
+              
+              border: "1px solid black",
+              padding: "1rem",
+              borderRadius: "8px",
+            }}
           >
-            <h3 style={{ fontSize: "2rem", fontWeight: "bold", background: "linear-gradient(90deg, #6a11cb, #2575fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "1rem" }}>
-              {post.title || "Untitled Post"}
+            <h3
+              style={{
+                fontSize: "3rem",
+                fontWeight: "bold",
+                background: "linear-gradient(90deg, #6a11cb, #2575fc)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+              }}
+            >
+              {post.title}
             </h3>
-            <Box sx={{ mb: 2, color: "#ddd" }}>
-              {post.description || "No description available."}
-            </Box>
-            <img
-              src={post.photo ? `${BACKEND_BASE_URL}/uploads/${post.photo}` : "/placeholder.png"}
-              alt={post.title || "Blog image"}
-              style={{ width: "100%", maxHeight: "400px", objectFit: "cover", borderRadius: "8px" }}
-              onError={(e) => { e.target.src = "/placeholder.png"; }}
-            />
+            <div
+              style={{
+                width: "100%",
+                maxHeight: "fit-content",
+                objectFit: "cover",
+                marginBottom: "25px",
+              }}
+            >
+              {post.description}
+            </div>
+            {post.photo && (
+              <img
+                src={`http://localhost:8000/${post.photo}`}
+                alt={post.title}
+                style={{
+                  width: "100%",
+                  maxHeight: "fit-content",
+                  objectFit: "cover",
+                }}
+              />
+            )}
           </MotionBox>
         ))}
-      </Box>
-    </Box>
+      </div>
+    </div>
+    </>
   );
 };
 
