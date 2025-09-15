@@ -112,7 +112,7 @@ const ViewBlog = () => {
               </div>
               {post.photoUrl && (
                 <img
-                  src={post.photoUrl}
+                  src={post.photo}
                   alt={post.title}
                   style={{
                     width: "100%",
