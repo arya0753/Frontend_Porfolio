@@ -45,90 +45,86 @@ const ViewBlog = () => {
   }, []);
 
   if (loading) return <p>Loading blogs...</p>;
-  if (posts.length === 0) return <p style={{color:"white"}}>No blogs found. <Add /></p>;
+  if (posts.length === 0)
+    return (
+      <p style={{ color: "white" }}>
+        No blogs found. <Add />
+      </p>
+    );
 
   return (
     <>
-    
-    <div style={{ width: "100%", margin: "auto" }}>
-      
-     
-      <div
-        className="header"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h2 style={{ color: "white" }}>📖 Blog Posts</h2>
-         <Add />
-      </div>
+      <div style={{ width: "100%", margin: "auto" }}>
+        <div
+          className="header"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}>
+          <h2 style={{ color: "white" }}>📖 Blog Posts</h2>
+          <Add />
+        </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          color: "white",
-          padding: "2rem",
-          gap: "1rem",
-          borderRadius: "5px",
-          background: "linear-gradient(135deg, #1f1f1f, #2a2a2a, #1f1f1f)",
-        }}
-      >
-        {posts.map((post) => (
-          <MotionBox
-            key={post._id}
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.1 }}
-            animate="visible"
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            sx={{
-              
-              border: "1px solid black",
-              padding: "1rem",
-              borderRadius: "8px",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "3rem",
-                fontWeight: "bold",
-                background: "linear-gradient(90deg, #6a11cb, #2575fc)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-              }}
-            >
-              {post.title}
-            </h3>
-            <div
-              style={{
-                width: "100%",
-                maxHeight: "fit-content",
-                objectFit: "cover",
-                marginBottom: "25px",
-              }}
-            >
-              {post.description}
-            </div>
-            {post.photo && (
-              <img
-                src={`http://localhost:8000/${post.photo}`}
-                alt={post.title}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            color: "white",
+            padding: "2rem",
+            gap: "1rem",
+            borderRadius: "5px",
+            background: "linear-gradient(135deg, #1f1f1f, #2a2a2a, #1f1f1f)",
+          }}>
+          {posts.map((post) => (
+            <MotionBox
+              key={post._id}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.1 }}
+              animate="visible"
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              sx={{
+                border: "1px solid black",
+                padding: "1rem",
+                borderRadius: "8px",
+              }}>
+              <h3
+                style={{
+                  fontSize: "3rem",
+                  fontWeight: "bold",
+                  background: "linear-gradient(90deg, #6a11cb, #2575fc)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+                }}>
+                {post.title}
+              </h3>
+              <div
                 style={{
                   width: "100%",
                   maxHeight: "fit-content",
                   objectFit: "cover",
-                }}
-              />
-            )}
-          </MotionBox>
-        ))}
+                  marginBottom: "25px",
+                }}>
+                {post.description}
+              </div>
+              {post.photoUrl && (
+                <img
+                  src={post.photoUrl}
+                  alt={post.title}
+                  style={{
+                    width: "100%",
+                    maxHeight: "fit-content",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+            </MotionBox>
+          ))}
+        </div>
       </div>
-    </div>
     </>
   );
 };
