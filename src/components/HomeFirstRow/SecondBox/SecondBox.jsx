@@ -20,6 +20,7 @@ const SecondBox = () => {
    const navigate = useNavigate();
   return (
     <MotionBox
+    onClick={() => navigate('/about')}
       sx={{
         // cursor:'pointer',
         width: {xs:"100%"},
