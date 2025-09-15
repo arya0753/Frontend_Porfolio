@@ -110,9 +110,9 @@ const ViewBlog = () => {
                 }}>
                 {post.description}
               </div>
-              {post.photoUrl && (
+              {post.photo && (
                 <img
-                  src={post.photo}
+                  src={`${BACKEND_BASE_URL}/uploads/${post.photo}`}
                   alt={post.title}
                   style={{
                     width: "100%",
