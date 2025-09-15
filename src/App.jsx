@@ -9,8 +9,8 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import About from "./About/About";
-// import Blog from "./blog/Blog";
-// import ViewBlog from "./blog/ViewBlog";
+import Blog from "./blog/Blog";
+import ViewBlog from "./blog/ViewBlog";
 import fontTheme from "./theme";
 import Work from "./Work/Work";
 
@@ -60,7 +60,7 @@ function App() {
                 <Route path="/" element={<Page1 />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/blog" element={<Blog />} />
-                {/* <Route path="/viewblog" element={<ViewBlog />} /> */}
+                <Route path="/viewblog" element={<ViewBlog />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/work" element={<Work />} />
               </Routes>
